@@ -1,33 +1,46 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+// Controller - Url 매핑 라우터, request, Query, Body 다룬다.
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { Movie } from './entities/movie.entity';
+import { MoviesService } from './movies.service';
 
 @Controller('movies')
 export class MoviesController {
-  @Get()
-  getAll() {
-    return 'This is Movie API';
+
+  constructor(private readonly moviesService: MoviesService) {
+    // ▲ MovieService import
   }
 
-  // :id보다 아래에 있을시 search는 :id 취급
-  @Get('search')
-  search(@Query('year') searchingYear: string) {
-    return `We are searching for a movie made after: ${searchingYear}`;
+  @Get()
+  getAll() {
+    return this.moviesService.getAll();
   }
 
   @Get('/:id')
-  getOne(@Param('id') movieId: string) {
+  getOne(@Param('id') movieId: string): Movie { // 반환 타입 Movie
     // Param에서 id를 얻고 변수 movieId에 담음
-    return `This is One Movie. id: ${movieId}`;
+    console.log(this.moviesService.getOne(movieId))
+    return this.moviesService.getOne(movieId);
   }
 
   @Post()
   create(@Body() movieData) {
-    console.log(movieData);
-    return movieData;
+    console.log(this.moviesService.createMovie(movieData))
+    return this.moviesService.createMovie(movieData);
   }
 
   @Delete('/:id')
   remove(@Param('id') movieId: string) {
-    return `This will delete a movie. id: ${movieId}`;
+    console.log(this.moviesService.deleteOne(movieId))
+    return this.moviesService.deleteOne(movieId);
   }
 
   @Patch('/:id')
@@ -35,6 +48,6 @@ export class MoviesController {
     return {
       updateMovie: movieId,
       ...updateData,
-    }
+    };
   }
 }
