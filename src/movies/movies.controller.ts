@@ -1,10 +1,16 @@
-import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 
 @Controller('movies')
 export class MoviesController {
   @Get()
   getAll() {
     return 'This is Movie API';
+  }
+
+  // :id보다 아래에 있을시 search는 :id 취급
+  @Get('search')
+  search(@Query('year') searchingYear: string) {
+    return `We are searching for a movie made after: ${searchingYear}`;
   }
 
   @Get('/:id')
@@ -14,8 +20,9 @@ export class MoviesController {
   }
 
   @Post()
-  create() {
-    return 'This will create a movie';
+  create(@Body() movieData) {
+    console.log(movieData);
+    return movieData;
   }
 
   @Delete('/:id')
@@ -24,7 +31,10 @@ export class MoviesController {
   }
 
   @Patch('/:id')
-  path(@Param('id') movieId: string) {
-    return `Update. id: ${movieId}`;
+  path(@Param('id') movieId: string, @Body() updateData) {
+    return {
+      updateMovie: movieId,
+      ...updateData,
+    }
   }
 }
