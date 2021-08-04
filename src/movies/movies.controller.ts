@@ -27,13 +27,11 @@ export class MoviesController {
   @Get('/:id')
   getOne(@Param('id') movieId: string): Movie { // 반환 타입 Movie
     // Param에서 id를 얻고 변수 movieId에 담음
-    console.log(this.moviesService.getOne(movieId))
     return this.moviesService.getOne(movieId);
   }
 
   @Post()
   create(@Body() movieData) {
-    console.log(this.moviesService.createMovie(movieData))
     return this.moviesService.createMovie(movieData);
   }
 
@@ -45,9 +43,6 @@ export class MoviesController {
 
   @Patch('/:id')
   path(@Param('id') movieId: string, @Body() updateData) {
-    return {
-      updateMovie: movieId,
-      ...updateData,
-    };
+    return this.moviesService.update(movieId, updateData)
   }
 }
